@@ -1,0 +1,5 @@
+com/ucc/repository/ActorRepository.class
+com/ucc/Main.class
+com/ucc/model/Actor.class
+com/ucc/Connection/DatabaseConnection.class
+com/ucc/repository/IRepository.class

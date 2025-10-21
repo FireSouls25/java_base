@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ucc.connection.DatabaseConnection;
+import com.ucc.Connection.DatabaseConnection;
 import com.ucc.model.Actor;
 
 public class ActorRepository implements IRepository{
@@ -44,6 +44,44 @@ public class ActorRepository implements IRepository{
             myPrepare.executeUpdate();
         }
         return actor;
+    }
+
+    @Override
+    public Actor getById(Long id) throws SQLException {
+        Actor actor = null;
+        String sql = "SELECT * FROM sakila.actor WHERE actor_id = ?";
+        try (PreparedStatement myPrepare = getConnection().prepareStatement(sql)) {
+            myPrepare.setLong(1, id);
+            try (ResultSet myRes = myPrepare.executeQuery()) {
+                if (myRes.next()) {
+                    actor = new Actor();
+                    actor.setActor_id(myRes.getInt("actor_id"));
+                    actor.setFirst_name(myRes.getString("first_name"));
+                    actor.setLast_name(myRes.getString("last_name"));
+                }
+            }
+        }
+        return actor;
+    }
+
+    @Override
+    public void update(Actor actor) throws SQLException {
+        String sql = "UPDATE sakila.actor SET first_name = ?, last_name = ? WHERE actor_id = ?";
+        try (PreparedStatement myPrepare = getConnection().prepareStatement(sql)) {
+            myPrepare.setString(1, actor.getFirst_name());
+            myPrepare.setString(2, actor.getLast_name());
+            myPrepare.setInt(3, actor.getActor_id());
+            myPrepare.executeUpdate();
+        }
+    }
+
+    @Override
+    public void delete(Long id) throws SQLException {
+        String sql = "DELETE FROM sakila.actor WHERE actor_id = ?";
+        try (PreparedStatement myPrepare = getConnection().prepareStatement(sql)) {
+            myPrepare.setLong(1, id);
+            myPrepare.executeUpdate();
+        }
     }
     
 }
